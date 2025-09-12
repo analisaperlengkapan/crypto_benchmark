@@ -1,0 +1,31 @@
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Benchmark results
+criterion/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Build artifacts
+debug/
+release/
+
+# Documentation
+doc/
