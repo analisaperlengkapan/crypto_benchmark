@@ -1,6 +1,20 @@
 # Cryptographic Benchmarking Tool
 
-Aplikasi Rust untuk membandingkan performa algoritma kriptografi, termasuk signature klasik dan post-quantum, serta Key Encapsulation Mechanism (KEM).
+Aplikasi Rust untuk membandingkan performa algoritma kriptografi, termasuk signature klasik dan post-quantum, serta Key Encapsul### Kecepatan KE### Kecepatan KEM (Decapsulate)
+
+| Algorithm | Time | Category |
+|-----------|------|----------|
+| **ML-KEM** | 409 μs | Post-Quantum ⚡ |
+| **Diffie-Hellman** | 740 μs | Classical ⚡ |
+| **ECDH** | 14.7 ms | Classical |
+| **RSA KEM** | 55.2 ms | Classical 🐌 |sulate)
+
+| Algorithm | Time | Category |
+|-----------|------|----------|
+| **ML-KEM** | 172 μs | Post-Quantum ⚡ |
+| **Diffie-Hellman** | 839 μs | Classical ⚡ |
+| **RSA KEM** | 3.8 ms | Classical |
+| **ECDH** | 3.7 ms | Classical |chanism (KEM).
 
 ## Algoritma yang Didukung
 
@@ -71,7 +85,7 @@ cargo run
 cargo bench
 ```
 
-## Hasil Benchmark Terbaru (Oktober 2025)
+## Hasil Benchmark Terbaru (September 12, 2025)
 
 ### Signature Performance
 
@@ -79,34 +93,34 @@ cargo bench
 Ed25519 Signature:
   Key Size: 32 bytes
   Signature Size: 64 bytes
-  Sign Time: 756 μs, CPU: 0%, Mem: 1452 KB
-  Verify Time: 12795 μs, CPU: 0%, Mem: 0 KB
+  Sign Time: 174 μs, CPU: 25%, Mem: 504 KB
+  Verify Time: 8487 μs, CPU: 0%, Mem: 1008 KB
 
 RSA Signature:
   Key Size: 2048 bits
   Signature Size: 256 bytes
-  Sign Time: 33968 μs, CPU: 0%, Mem: 12 KB
-  Verify Time: 3787 μs, CPU: 0%, Mem: 0 KB
+  Sign Time: 51040 μs, CPU: 0%, Mem: 3720 KB
+  Verify Time: 4636 μs, CPU: 0%, Mem: 992 KB
 
 ECDSA Signature:
   Key Size: 32 bytes
   Signature Size: 64 bytes
-  Sign Time: 2168 μs, CPU: 0%, Mem: 0 KB
-  Verify Time: 3177 μs, CPU: 0%, Mem: 0 KB
+  Sign Time: 1785 μs, CPU: 0%, Mem: 748 KB
+  Verify Time: 3399 μs, CPU: 0%, Mem: 2004 KB
 
 Dilithium Signature:
   Public Key Size: 1312 bytes
   Secret Key Size: 2560 bytes
   Signature Size: 2420 bytes
-  Sign Time: 192 μs, CPU: 0%, Mem: 0 KB
-  Verify Time: 123 μs, CPU: 0%, Mem: 0 KB
+  Sign Time: 162 μs, CPU: 0%, Mem: 1764 KB
+  Verify Time: 220 μs, CPU: 9%, Mem: 4776 KB
 
 Falcon Signature:
   Public Key Size: 897 bytes
   Secret Key Size: 1281 bytes
-  Signature Size: 690 bytes
-  Sign Time: 1172 μs, CPU: 0%, Mem: 0 KB
-  Verify Time: 135 μs, CPU: 0%, Mem: 0 KB
+  Signature Size: 752 bytes
+  Sign Time: 1179 μs, CPU: 0%, Mem: 932 KB
+  Verify Time: 234 μs, CPU: 0%, Mem: 1252 KB
 ```
 
 ### KEM Performance
@@ -115,29 +129,29 @@ Falcon Signature:
 Diffie-Hellman:
   Key Size: 32 bytes
   Shared Secret Size: 32 bytes
-  Encapsulate Time: 523 μs, CPU: 0%, Mem: 0 KB
-  Decapsulate Time: 382 μs, CPU: 0%, Mem: 0 KB
+  Encapsulate Time: 839 μs, CPU: 0%, Mem: 2404 KB
+  Decapsulate Time: 740 μs, CPU: 0%, Mem: 1192 KB
 
 RSA KEM:
   Key Size: 2048 bits
   Ciphertext Size: 256 bytes
-  Encapsulate Time: 4403 μs, CPU: 0%, Mem: 0 KB
-  Decapsulate Time: 34431 μs, CPU: 0%, Mem: 216 KB
+  Encapsulate Time: 3798 μs, CPU: 0%, Mem: 2764 KB
+  Decapsulate Time: 55188 μs, CPU: 0%, Mem: 4948 KB
 
 ECDH:
   Key Size: 32 bytes
   Shared Secret Size: 32 bytes
-  Encapsulate Time: 3288 μs, CPU: 0%, Mem: 0 KB
-  Decapsulate Time: 2818 μs, CPU: 0%, Mem: 0 KB
+  Encapsulate Time: 3726 μs, CPU: 0%, Mem: 2772 KB
+  Decapsulate Time: 14727 μs, CPU: 0%, Mem: 2016 KB
 
 Kyber:
   Public Key Size: 800 bytes
   Secret Key Size: 1632 bytes
   Ciphertext Size: 768 bytes
   Shared Secret Size: 32 bytes
-  Encapsulate Time: 188 μs, CPU: 0%, Mem: 0 KB
-  Decapsulate Time: 269 μs, CPU: 0%, Mem: 500 KB
-```
+  Encapsulate Time: 172 μs, CPU: 0%, Mem: 5524 KB
+  Decapsulate Time: 409 μs, CPU: 0%, Mem: 6308 KB
+````
 
 ## Perbandingan Algoritma
 
@@ -145,21 +159,21 @@ Kyber:
 
 | Algorithm | Time | Category |
 |-----------|------|----------|
-| **ML-DSA** | 192 μs | Post-Quantum ⚡ |
-| **Ed25519** | 756 μs | Classical ⚡ |
-| **ECDSA** | 2.2 ms | Classical |
+| **ML-DSA** | 162 μs | Post-Quantum ⚡ |
+| **Ed25519** | 174 μs | Classical ⚡ |
+| **ECDSA** | 1.8 ms | Classical |
 | **Falcon** | 1.2 ms | Post-Quantum |
-| **RSA** | 34.0 ms | Classical 🐌 |
+| **RSA** | 51.0 ms | Classical 🐌 |
 
 ### Kecepatan Signature (Verify Time)
 
 | Algorithm | Time | Category |
 |-----------|------|----------|
-| **ML-DSA** | 123 μs | Post-Quantum ⚡ |
-| **Falcon** | 135 μs | Post-Quantum ⚡ |
-| **RSA** | 3.8 ms | Classical |
-| **ECDSA** | 3.2 ms | Classical |
-| **Ed25519** | 12.8 ms | Classical |
+| **ML-DSA** | 220 μs | Post-Quantum ⚡ |
+| **Falcon** | 234 μs | Post-Quantum ⚡ |
+| **ECDSA** | 3.4 ms | Classical |
+| **RSA** | 4.6 ms | Classical |
+| **Ed25519** | 8.5 ms | Classical |
 
 ### Kecepatan KEM (Encapsulate)
 
@@ -189,7 +203,7 @@ Kyber:
 | **ECDH** | 32 bytes | 32 bytes | Classical |
 | **RSA** | 2048 bits (~256 bytes) | 256 bytes | Classical |
 | **RSA KEM** | 2048 bits (~256 bytes) | 256 bytes | Classical |
-| **Falcon** | 897 bytes (PK) / 1281 bytes (SK) | 690 bytes | Post-Quantum |
+| **Falcon** | 897 bytes (PK) / 1281 bytes (SK) | 752 bytes | Post-Quantum |
 | **ML-KEM** | 800 bytes (PK) / 1632 bytes (SK) | 768 bytes | Post-Quantum |
 | **ML-DSA** | 1312 bytes (PK) / 2560 bytes (SK) | 2420 bytes | Post-Quantum |
 
@@ -198,25 +212,26 @@ Kyber:
 ### 🏆 **Pemenang Berdasarkan Kategori**
 
 **Signature Tercepat (Sign):**
-- **ML-DSA** (192 μs) - Post-quantum dengan performa luar biasa
+- **ML-DSA** (162 μs) - Post-quantum dengan performa luar biasa
+- **Ed25519** (174 μs) - Classical tercepat
 
 **Signature Tercepat (Verify):**
-- **ML-DSA** (123 μs) - Verifikasi ultra-cepat
-- **Falcon** (135 μs) - Hampir sama cepat dengan ML-DSA
+- **ML-DSA** (220 μs) - Verifikasi ultra-cepat
+- **Falcon** (234 μs) - Hampir sama cepat
 
 **Signature Terkecil:**
-- **Falcon** (690 bytes) - Ukuran signature paling efisien
+- **Falcon** (752 bytes) - Ukuran signature efisien
 
 **KEM Tercepat (Encapsulate):**
-- **ML-KEM** (188 μs) - Post-quantum tercepat
+- **ML-KEM** (172 μs) - Post-quantum tercepat
 
 **KEM Tercepat (Decapsulate):**
-- **ML-KEM** (269 μs) - Post-quantum dominan
+- **ML-KEM** (409 μs) - Post-quantum dominan
 
 **Keseimbangan Terbaik:**
 - **Ed25519** - Cepat, ukuran kecil, terbukti aman
 - **ECDSA** - Keseimbangan yang baik untuk aplikasi modern
-- **Falcon** - Ukuran signature kecil, verifikasi cepat (post-quantum)
+- **Falcon** - Ukuran signature efisien, verifikasi cepat (post-quantum)
 
 ### 📊 **Rekomendasi Penggunaan**
 
@@ -232,9 +247,9 @@ Kyber:
 - `x25519-dalek`: Implementasi Diffie-Hellman X25519 (v2.0)
 - `rsa`: Implementasi RSA dengan PSS/SHA256 (v0.9)
 - `ecdsa` & `p256`: Implementasi ECDSA dan ECDH (v0.16, v0.13)
-- `pqcrypto-mldsa`: Post-quantum signature ML-DSA (FIPS 204, v0.1)
-- `pqcrypto-mlkem`: Post-quantum KEM ML-KEM (FIPS 203, v0.1)
-- `pqcrypto-falcon`: Post-quantum signature Falcon (FIPS 205, v0.2)
+- `pqcrypto-mldsa`: Post-quantum signature ML-DSA (FIPS 204, v0.1.2)
+- `pqcrypto-mlkem`: Post-quantum KEM ML-KEM (FIPS 203, v0.1.1)
+- `pqcrypto-falcon`: Post-quantum signature Falcon (FIPS 205, v0.4.1)
 - `criterion`: Benchmarking presisi tinggi (v0.7)
 - `sysinfo`: Monitoring sistem (v0.37)
 - `rand` & `sha2`: Utilitas kriptografi (v0.8, v0.10)

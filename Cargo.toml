@@ -13,9 +13,9 @@ criterion = "0.7"
 sysinfo = "0.37"
 rand = "0.8"
 sha2 = "0.10"
-pqcrypto-mldsa = "0.1"
-pqcrypto-mlkem = "0.1"
-pqcrypto-falcon = "0.2"
+pqcrypto-mldsa = "0.1.2"
+pqcrypto-mlkem = "0.1.1"
+pqcrypto-falcon = "0.4.1"
 
 [[bench]]
 name = "crypto_bench"
