@@ -1,9 +1,8 @@
 use crate::measure_resources;
-use ed25519_dalek::{SigningKey as Ed25519SigningKey, VerifyingKey as Ed25519VerifyingKey, Signature as Ed25519Signature, Signer, Verifier};
+use ed25519_dalek::{SigningKey as Ed25519SigningKey, Signature as Ed25519Signature, Signer, Verifier};
 use rsa::{RsaPrivateKey, RsaPublicKey, Pss};
 use sha2::{Sha256, Digest};
 use p256::ecdsa::{SigningKey as P256SigningKey};
-use ecdsa::signature::{Signer as EcdsaSigner, Verifier as EcdsaVerifier};
 use pqcrypto_mldsa::*;
 use pqcrypto_falcon::*;
 use rand::rngs::OsRng;

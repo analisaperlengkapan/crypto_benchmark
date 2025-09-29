@@ -1,6 +1,6 @@
 [package]
 name = "crypto_benchmark"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2021"
 
 [dependencies]
@@ -11,7 +11,7 @@ ed25519-dalek = { version = "2.0", features = ["std"] }
 x25519-dalek = "2.0"
 criterion = "0.7"
 sysinfo = "0.37"
-rand = "0.8"
+rand = "0.8.5"
 sha2 = "0.10"
 pqcrypto-mldsa = "0.1.2"
 pqcrypto-mlkem = "0.1.1"

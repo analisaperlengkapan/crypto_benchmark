@@ -162,7 +162,7 @@ fn benchmark_kyber(sys: &mut System) {
         let _ = mlkem512::encapsulate(&pk_temp);
     });
 
-    let (shared_secret_alice, ciphertext) = mlkem512::encapsulate(&pk);
+    let (_, ciphertext) = mlkem512::encapsulate(&pk);
 
     let (dec_time, dec_cpu, dec_mem) = measure_resources(sys, || {
         let (_, sk_temp) = mlkem512::keypair();

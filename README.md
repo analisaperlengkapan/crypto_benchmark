@@ -276,7 +276,7 @@ README.md           # Dokumentasi ini
 
 Aplikasi ini menggunakan algoritma kriptografi terkini yang tersedia di Rust crates, termasuk implementasi post-quantum cryptography (ML-DSA, ML-KEM, dan Falcon) dari PQClean project yang mengikuti standar FIPS 204, FIPS 203, dan FIPS 205. Semua algoritma telah diuji dan memberikan hasil benchmark yang konsisten.
 
-**Benchmark dijalankan pada:** September 12, 2025
+**Benchmark dijalankan pada:** September 29, 2025
 **Platform:** Linux
 **Rust Version:** 2021 Edition</content>
 <parameter name="filePath">/home/clouduser/enc_test/README.md

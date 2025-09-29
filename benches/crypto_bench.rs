@@ -1,6 +1,8 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 use crypto_benchmark::signatures::*;
 use crypto_benchmark::kem::*;
+use pqcrypto_mlkem::mlkem512;
 
 fn benchmark_signatures(c: &mut Criterion) {
     let mut group = c.benchmark_group("Signatures");
@@ -33,7 +35,12 @@ fn benchmark_kem(c: &mut Criterion) {
     group.bench_function("ECDH Decapsulate", |b| b.iter(|| ecdh_decapsulate()));
 
     group.bench_function("Kyber Encapsulate", |b| b.iter(|| kyber_encapsulate()));
-    group.bench_function("Kyber Decapsulate", |b| b.iter(|| kyber_decapsulate()));
+
+    group.bench_function("Kyber Decapsulate", |b| {
+        let (_, sk) = mlkem512::keypair();
+        let (_, ciphertext) = kyber_encapsulate();
+        b.iter(|| kyber_decapsulate(ciphertext, sk))
+    });
 
     group.finish();
 }
