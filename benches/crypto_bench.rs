@@ -19,22 +19,25 @@ fn benchmark_signatures(c: &mut Criterion) {
     group.bench_function("Dilithium Sign", |b| b.iter(|| dilithium_sign(black_box(b"Hello, world!"))));
     group.bench_function("Dilithium Verify", |b| b.iter(|| dilithium_verify(black_box(b"Hello, world!"))));
 
+    group.bench_function("Falcon Sign", |b| b.iter(|| falcon_sign(black_box(b"Hello, world!"))));
+    group.bench_function("Falcon Verify", |b| b.iter(|| falcon_verify(black_box(b"Hello, world!"))));
+
     group.finish();
 }
 
 fn benchmark_kem(c: &mut Criterion) {
     let mut group = c.benchmark_group("KEM");
 
-    group.bench_function("RSA KEM Encapsulate", |b| b.iter(|| rsa_kem_encapsulate()));
-    group.bench_function("RSA KEM Decapsulate", |b| b.iter(|| rsa_kem_decapsulate()));
+    group.bench_function("RSA KEM Encapsulate", |b| b.iter(rsa_kem_encapsulate));
+    group.bench_function("RSA KEM Decapsulate", |b| b.iter(rsa_kem_decapsulate));
 
-    group.bench_function("DH Encapsulate", |b| b.iter(|| dh_encapsulate()));
-    group.bench_function("DH Decapsulate", |b| b.iter(|| dh_decapsulate()));
+    group.bench_function("DH Encapsulate", |b| b.iter(dh_encapsulate));
+    group.bench_function("DH Decapsulate", |b| b.iter(dh_decapsulate));
 
-    group.bench_function("ECDH Encapsulate", |b| b.iter(|| ecdh_encapsulate()));
-    group.bench_function("ECDH Decapsulate", |b| b.iter(|| ecdh_decapsulate()));
+    group.bench_function("ECDH Encapsulate", |b| b.iter(ecdh_encapsulate));
+    group.bench_function("ECDH Decapsulate", |b| b.iter(ecdh_decapsulate));
 
-    group.bench_function("Kyber Encapsulate", |b| b.iter(|| kyber_encapsulate()));
+    group.bench_function("Kyber Encapsulate", |b| b.iter(kyber_encapsulate));
 
     group.bench_function("Kyber Decapsulate", |b| {
         let (_, sk) = mlkem512::keypair();

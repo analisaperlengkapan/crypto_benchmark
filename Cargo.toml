@@ -1,7 +1,14 @@
 [package]
 name = "crypto_benchmark"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
+authors = ["Crypto Benchmark Contributors"]
+description = "High-performance benchmarking tool for classical and post-quantum cryptographic algorithms"
+readme = "README.md"
+repository = "https://github.com/analisaperlengkapan/crypto_benchmark"
+license = "MIT"
+keywords = ["cryptography", "benchmark", "post-quantum", "pqc", "performance"]
+categories = ["cryptography", "development-tools::profiling"]
 
 [dependencies]
 rsa = { version = "0.9", features = ["sha2", "pem"] }
