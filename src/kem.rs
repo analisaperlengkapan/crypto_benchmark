@@ -177,3 +177,19 @@ pub fn kyber_encapsulate() -> (pqcrypto_mlkem::mlkem512::SharedSecret, pqcrypto_
 pub fn kyber_decapsulate(ciphertext: pqcrypto_mlkem::mlkem512::Ciphertext, sk: pqcrypto_mlkem::mlkem512::SecretKey) -> pqcrypto_mlkem::mlkem512::SharedSecret {
     mlkem512::decapsulate(&ciphertext, &sk)
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::BenchmarkKeys;
+
+    #[test]
+    fn test_kyber_encapsulate_decapsulate() {
+        let keys = BenchmarkKeys::generate().unwrap();
+        // Encapsulate with public key - returns (SharedSecret, Ciphertext)
+        let (shared_secret_enc, ciphertext) = pqcrypto_mlkem::mlkem512::encapsulate(&keys.kyber_public);
+        // Decapsulate with secret key
+        let shared_secret_dec = pqcrypto_mlkem::mlkem512::decapsulate(&ciphertext, &keys.kyber_secret);
+        // Compare shared secrets
+        assert_eq!(shared_secret_enc, shared_secret_dec, "Kyber shared secret mismatch");
+    }
+}

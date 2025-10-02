@@ -557,8 +557,9 @@ We're always looking for help with:
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/analisaperlengkapan/crypto_benchmark/issues)
+- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
 - **Documentation**: `cargo doc --open`
+- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
 
 ---
 

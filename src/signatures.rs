@@ -281,3 +281,20 @@ pub fn falcon_verify(message: &[u8]) {
     let signature = falcon512::sign(message, &sk);
     falcon512::open(&signature, &pk).unwrap();
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::BenchmarkKeys;
+
+    #[test]
+    fn test_ed25519_sign_and_verify() {
+        let keys = BenchmarkKeys::generate().unwrap();
+        let message = b"test message";
+        // Sign with pre-generated key
+        let signature = keys.ed25519_signing.sign(message);
+        // Verify should not panic
+        use ed25519_dalek::Verifier;
+        keys.ed25519_verifying.verify(message, &signature).expect("Verification failed");
+    }
+}
