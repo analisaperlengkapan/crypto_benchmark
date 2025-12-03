@@ -104,7 +104,6 @@ fn benchmark_kyber_optimized(keys: &BenchmarkKeys) {
     // but the fact that decapsulation completes without error validates correctness
     
     println!("  Public Key Size: {} bytes", mlkem512::public_key_bytes());
-    println!("  Secret Key Size: {} bytes", mlkem512::secret_key_bytes());
     println!("  Ciphertext Size: {} bytes", mlkem512::ciphertext_bytes());
     println!("  Shared Secret Size: {} bytes", mlkem512::shared_secret_bytes());
     encaps_result.print("Encapsulation Performance:");
