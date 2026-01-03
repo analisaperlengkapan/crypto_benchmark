@@ -75,10 +75,18 @@ fn print_usage() {
 
 fn run_server() {
     println!("🚀 Starting Crypto Benchmark Server...");
-    let rt = tokio::runtime::Runtime::new().unwrap();
-    rt.block_on(async {
-        server::start_server(3000).await;
-    });
+    let rt = match tokio::runtime::Runtime::new() {
+        Ok(rt) => rt,
+        Err(e) => {
+            eprintln!("❌ Failed to start Tokio runtime: {}", e);
+            return;
+        }
+    };
+
+    if let Err(e) = rt.block_on(async { server::start_server(3000).await }) {
+        eprintln!("❌ Server error: {}", e);
+        std::process::exit(1);
+    }
 }
 
 #[allow(dead_code)]

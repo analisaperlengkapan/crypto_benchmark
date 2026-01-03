@@ -21,19 +21,13 @@ struct AppState {
     cached_report: Mutex<Option<BenchmarkReport>>,
 }
 
-pub async fn start_server(port: u16) {
+pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
     println!("⏳ Generating keys for server...");
-    let keys = match BenchmarkKeys::generate() {
-        Ok(k) => Arc::new(k),
-        Err(e) => {
-            eprintln!("❌ Failed to generate keys: {}", e);
-            return;
-        }
-    };
+    let keys = BenchmarkKeys::generate()?;
     println!("✓ Keys generated. Starting server...");
 
     let state = Arc::new(AppState {
-        keys,
+        keys: Arc::new(keys),
         cached_report: Mutex::new(None),
     });
 
@@ -46,8 +40,10 @@ pub async fn start_server(port: u16) {
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
     println!("🌍 Server running at http://localhost:{}", port);
 
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await?;
+    axum::serve(listener, app).await?;
+
+    Ok(())
 }
 
 async fn run_benchmarks(State(state): State<Arc<AppState>>) -> Json<BenchmarkReport> {
