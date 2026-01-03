@@ -7,6 +7,7 @@ pub mod error;
 pub mod constants;
 pub mod keys;
 pub mod measurement;
+pub mod models;
 
 // Legacy support - deprecated but kept for compatibility
 use std::time::Instant;

@@ -2,6 +2,8 @@
 use crate::keys::BenchmarkKeys;
 use crate::measurement::benchmark_operation;
 use crate::constants::DEFAULT_MESSAGE;
+use crate::models::BenchmarkMetric;
+use std::collections::HashMap;
 use ed25519_dalek::Signer;
 use rsa::Pss;
 use sha2::{Sha256, Digest};
@@ -10,31 +12,28 @@ use pqcrypto_falcon::falcon512;
 
 const BENCH_ITERATIONS: usize = 100;
 
-pub fn benchmark_signatures_optimized(keys: &BenchmarkKeys) {
-    println!("\n=== OPTIMIZED SIGNATURES BENCHMARK ===\n");
+pub fn benchmark_signatures_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
+    let mut metrics = Vec::new();
     
     // Ed25519
-    println!("Ed25519 Signature:");
-    benchmark_ed25519_optimized(keys);
+    metrics.extend(benchmark_ed25519_optimized(keys));
 
     // RSA
-    println!("\nRSA Signature:");
-    benchmark_rsa_optimized(keys);
+    metrics.extend(benchmark_rsa_optimized(keys));
 
     // ECDSA
-    println!("\nECDSA Signature:");
-    benchmark_ecdsa_optimized(keys);
+    metrics.extend(benchmark_ecdsa_optimized(keys));
 
     // Dilithium (ML-DSA)
-    println!("\nDilithium (ML-DSA-44) Signature:");
-    benchmark_dilithium_optimized(keys);
+    metrics.extend(benchmark_dilithium_optimized(keys));
 
     // Falcon
-    println!("\nFalcon-512 Signature:");
-    benchmark_falcon_optimized(keys);
+    metrics.extend(benchmark_falcon_optimized(keys));
+
+    metrics
 }
 
-fn benchmark_ed25519_optimized(keys: &BenchmarkKeys) {
+fn benchmark_ed25519_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
     let message = DEFAULT_MESSAGE;
     
     // Benchmark signing
@@ -55,13 +54,17 @@ fn benchmark_ed25519_optimized(keys: &BenchmarkKeys) {
         BENCH_ITERATIONS
     );
     
-    println!("  Key Size: 32 bytes");
-    println!("  Signature Size: {} bytes", signature.to_bytes().len());
-    sign_result.print("Sign Performance:");
-    verify_result.print("Verify Performance:");
+    let mut info = HashMap::new();
+    info.insert("key_size".to_string(), "32 bytes".to_string());
+    info.insert("signature_size".to_string(), format!("{} bytes", signature.to_bytes().len()));
+
+    vec![
+        sign_result.to_metric("Ed25519".to_string(), "Sign".to_string(), info.clone()),
+        verify_result.to_metric("Ed25519".to_string(), "Verify".to_string(), info)
+    ]
 }
 
-fn benchmark_rsa_optimized(keys: &BenchmarkKeys) {
+fn benchmark_rsa_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
     let message = DEFAULT_MESSAGE;
     
     // Pre-compute hash
@@ -94,13 +97,17 @@ fn benchmark_rsa_optimized(keys: &BenchmarkKeys) {
         BENCH_ITERATIONS
     );
     
-    println!("  Key Size: 2048 bits");
-    println!("  Signature Size: {} bytes", signature.len());
-    sign_result.print("Sign Performance:");
-    verify_result.print("Verify Performance:");
+    let mut info = HashMap::new();
+    info.insert("key_size".to_string(), "2048 bits".to_string());
+    info.insert("signature_size".to_string(), format!("{} bytes", signature.len()));
+
+    vec![
+        sign_result.to_metric("RSA-2048".to_string(), "Sign".to_string(), info.clone()),
+        verify_result.to_metric("RSA-2048".to_string(), "Verify".to_string(), info)
+    ]
 }
 
-fn benchmark_ecdsa_optimized(keys: &BenchmarkKeys) {
+fn benchmark_ecdsa_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
     let message = DEFAULT_MESSAGE;
     
     // Benchmark signing
@@ -125,13 +132,17 @@ fn benchmark_ecdsa_optimized(keys: &BenchmarkKeys) {
         BENCH_ITERATIONS
     );
     
-    println!("  Key Size: 32 bytes");
-    println!("  Signature Size: {} bytes", signature.to_vec().len());
-    sign_result.print("Sign Performance:");
-    verify_result.print("Verify Performance:");
+    let mut info = HashMap::new();
+    info.insert("key_size".to_string(), "32 bytes".to_string());
+    info.insert("signature_size".to_string(), format!("{} bytes", signature.to_vec().len()));
+
+    vec![
+        sign_result.to_metric("ECDSA P-256".to_string(), "Sign".to_string(), info.clone()),
+        verify_result.to_metric("ECDSA P-256".to_string(), "Verify".to_string(), info)
+    ]
 }
 
-fn benchmark_dilithium_optimized(keys: &BenchmarkKeys) {
+fn benchmark_dilithium_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
     let message = DEFAULT_MESSAGE;
     
     // Benchmark signing
@@ -152,14 +163,18 @@ fn benchmark_dilithium_optimized(keys: &BenchmarkKeys) {
         BENCH_ITERATIONS
     );
     
-    println!("  Public Key Size: {} bytes", mldsa44::public_key_bytes());
-    println!("  Secret Key Size: {} bytes", mldsa44::secret_key_bytes());
-    println!("  Signature Size: {} bytes", mldsa44::signature_bytes());
-    sign_result.print("Sign Performance:");
-    verify_result.print("Verify Performance:");
+    let mut info = HashMap::new();
+    info.insert("public_key_size".to_string(), format!("{} bytes", mldsa44::public_key_bytes()));
+    info.insert("secret_key_size".to_string(), format!("{} bytes", mldsa44::secret_key_bytes()));
+    info.insert("signature_size".to_string(), format!("{} bytes", mldsa44::signature_bytes()));
+
+    vec![
+        sign_result.to_metric("Dilithium (ML-DSA-44)".to_string(), "Sign".to_string(), info.clone()),
+        verify_result.to_metric("Dilithium (ML-DSA-44)".to_string(), "Verify".to_string(), info)
+    ]
 }
 
-fn benchmark_falcon_optimized(keys: &BenchmarkKeys) {
+fn benchmark_falcon_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
     let message = DEFAULT_MESSAGE;
     
     // Benchmark signing
@@ -180,11 +195,15 @@ fn benchmark_falcon_optimized(keys: &BenchmarkKeys) {
         BENCH_ITERATIONS
     );
     
-    println!("  Public Key Size: {} bytes", falcon512::public_key_bytes());
-    println!("  Secret Key Size: {} bytes", falcon512::secret_key_bytes());
-    println!("  Signature Size: {} bytes", falcon512::signature_bytes());
-    sign_result.print("Sign Performance:");
-    verify_result.print("Verify Performance:");
+    let mut info = HashMap::new();
+    info.insert("public_key_size".to_string(), format!("{} bytes", falcon512::public_key_bytes()));
+    info.insert("secret_key_size".to_string(), format!("{} bytes", falcon512::secret_key_bytes()));
+    info.insert("signature_size".to_string(), format!("{} bytes", falcon512::signature_bytes()));
+
+    vec![
+        sign_result.to_metric("Falcon-512".to_string(), "Sign".to_string(), info.clone()),
+        verify_result.to_metric("Falcon-512".to_string(), "Verify".to_string(), info)
+    ]
 }
 
 // Helper functions for Criterion benchmarks

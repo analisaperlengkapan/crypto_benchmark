@@ -1,5 +1,6 @@
 // Improved measurement system
 use std::time::{Duration, Instant};
+use crate::models::BenchmarkMetric;
 
 #[derive(Debug, Clone)]
 pub struct BenchmarkResult {
@@ -22,6 +23,19 @@ impl BenchmarkResult {
     
     pub fn mean_micros(&self) -> u64 {
         self.mean_duration.as_micros() as u64
+    }
+
+    pub fn to_metric(&self, name: String, operation: String, extra_info: std::collections::HashMap<String, String>) -> BenchmarkMetric {
+        BenchmarkMetric {
+            name,
+            operation,
+            mean_micros: self.mean_duration.as_micros() as f64,
+            min_micros: self.min_duration.as_micros() as f64,
+            max_micros: self.max_duration.as_micros() as f64,
+            std_dev_micros: self.std_deviation,
+            iterations: self.iterations,
+            extra_info,
+        }
     }
 }
 
