@@ -1,6 +1,8 @@
 // Optimized KEM module dengan pre-generated keys
 use crate::keys::BenchmarkKeys;
 use crate::measurement::benchmark_operation;
+use crate::models::BenchmarkMetric;
+use std::collections::HashMap;
 use x25519_dalek::{EphemeralSecret, PublicKey as X25519PublicKey};
 use p256::ecdh::EphemeralSecret as P256EphemeralSecret;
 use pqcrypto_mlkem::mlkem512;
@@ -8,23 +10,22 @@ use rand::rngs::OsRng;
 
 const BENCH_ITERATIONS: usize = 100;
 
-pub fn benchmark_kem_optimized(keys: &BenchmarkKeys) {
-    println!("\n=== OPTIMIZED KEM BENCHMARK ===\n");
-    
+pub fn benchmark_kem_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
+    let mut metrics = Vec::new();
+
     // Diffie-Hellman (X25519)
-    println!("X25519 Diffie-Hellman:");
-    benchmark_dh_optimized();
+    metrics.extend(benchmark_dh_optimized());
 
     // ECDH (P-256)
-    println!("\nECDH (P-256):");
-    benchmark_ecdh_optimized();
+    metrics.extend(benchmark_ecdh_optimized());
 
     // Kyber (ML-KEM)
-    println!("\nKyber (ML-KEM-512):");
-    benchmark_kyber_optimized(keys);
+    metrics.extend(benchmark_kyber_optimized(keys));
+
+    metrics
 }
 
-fn benchmark_dh_optimized() {
+fn benchmark_dh_optimized() -> Vec<BenchmarkMetric> {
     // Pre-generate keypairs
     let alice_secret = EphemeralSecret::random_from_rng(OsRng);
     let alice_public = X25519PublicKey::from(&alice_secret);
@@ -45,12 +46,16 @@ fn benchmark_dh_optimized() {
     let bob_shared = bob_secret.diffie_hellman(&alice_public);
     assert_eq!(alice_shared.as_bytes(), bob_shared.as_bytes(), "DH shared secret mismatch");
     
-    println!("  Key Size: 32 bytes");
-    println!("  Shared Secret Size: {} bytes", alice_shared.as_bytes().len());
-    exchange_result.print("Key Exchange Performance:");
+    let mut info = HashMap::new();
+    info.insert("key_size".to_string(), "32 bytes".to_string());
+    info.insert("shared_secret_size".to_string(), format!("{} bytes", alice_shared.as_bytes().len()));
+
+    vec![
+        exchange_result.to_metric("X25519 Diffie-Hellman".to_string(), "Key Exchange".to_string(), info)
+    ]
 }
 
-fn benchmark_ecdh_optimized() {
+fn benchmark_ecdh_optimized() -> Vec<BenchmarkMetric> {
     // Pre-generate keypairs
     let alice_secret = P256EphemeralSecret::random(&mut OsRng);
     let alice_public = alice_secret.public_key();
@@ -75,12 +80,16 @@ fn benchmark_ecdh_optimized() {
         "ECDH shared secret mismatch"
     );
     
-    println!("  Key Size: 32 bytes");
-    println!("  Shared Secret Size: {} bytes", alice_shared.raw_secret_bytes().len());
-    exchange_result.print("Key Exchange Performance:");
+    let mut info = HashMap::new();
+    info.insert("key_size".to_string(), "32 bytes".to_string());
+    info.insert("shared_secret_size".to_string(), format!("{} bytes", alice_shared.raw_secret_bytes().len()));
+
+    vec![
+        exchange_result.to_metric("ECDH (P-256)".to_string(), "Key Exchange".to_string(), info)
+    ]
 }
 
-fn benchmark_kyber_optimized(keys: &BenchmarkKeys) {
+fn benchmark_kyber_optimized(keys: &BenchmarkKeys) -> Vec<BenchmarkMetric> {
     // Benchmark encapsulation
     let encaps_result = benchmark_operation(
         || {
@@ -103,11 +112,15 @@ fn benchmark_kyber_optimized(keys: &BenchmarkKeys) {
     // Note: Kyber shared secrets are opaque types, we can't directly compare
     // but the fact that decapsulation completes without error validates correctness
     
-    println!("  Public Key Size: {} bytes", mlkem512::public_key_bytes());
-    println!("  Ciphertext Size: {} bytes", mlkem512::ciphertext_bytes());
-    println!("  Shared Secret Size: {} bytes", mlkem512::shared_secret_bytes());
-    encaps_result.print("Encapsulation Performance:");
-    decaps_result.print("Decapsulation Performance:");
+    let mut info = HashMap::new();
+    info.insert("public_key_size".to_string(), format!("{} bytes", mlkem512::public_key_bytes()));
+    info.insert("ciphertext_size".to_string(), format!("{} bytes", mlkem512::ciphertext_bytes()));
+    info.insert("shared_secret_size".to_string(), format!("{} bytes", mlkem512::shared_secret_bytes()));
+
+    vec![
+        encaps_result.to_metric("Kyber (ML-KEM-512)".to_string(), "Encapsulate".to_string(), info.clone()),
+        decaps_result.to_metric("Kyber (ML-KEM-512)".to_string(), "Decapsulate".to_string(), info)
+    ]
 }
 
 // Helper functions for Criterion benchmarks
